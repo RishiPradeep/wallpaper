@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.wallpaper.entities.User;
 import com.example.wallpaper.repositories.UserRepository;
+
 import java.util.List;
 @Service
 public class UserService {
@@ -24,5 +25,15 @@ public class UserService {
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    public boolean loginUser (String username, String password) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            //TODO:ENCRYT PASSWORD
+            return user.getPassword().equals(password);
+        }
+        return false;
     }
 }
