@@ -3,6 +3,7 @@ package com.example.wallpaper.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.wallpaper.entities.User;
@@ -14,8 +15,10 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder =  new BCryptPasswordEncoder(11);
 
     public User createUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -31,8 +34,7 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findByUsername(username);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
-            //TODO:ENCRYT PASSWORD
-            return user.getPassword().equals(password);
+            return passwordEncoder.matches(password, user.getPassword());
         }
         return false;
     }
