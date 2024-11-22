@@ -59,13 +59,16 @@ public class EmailService {
     public boolean verifyOtp (String email, int otp) {
         Optional<UserOtp> optionalUserOtp = userOtpRepository.findByEmail(email);
         if (!optionalUserOtp.isPresent()) {
+            System.out.println("Not present");
             return false;
         }
         UserOtp userOtp = optionalUserOtp.get();
+        System.out.println(userOtp);
         if (userOtp.isExpired()) {
+            System.out.println("Expired");
             return false;
         }
-        if (userOtp.getId() != otp) {
+        if (userOtp.getOtp() != otp) {
             return false;
         }
         if (userOtp.getOtp() == otp) {

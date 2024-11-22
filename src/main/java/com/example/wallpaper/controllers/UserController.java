@@ -74,9 +74,9 @@ public class UserController {
 
     @GetMapping("/getOtp/{email}")
     // Send OTP
-    public ResponseEntity<ApiResponse<Void>> sendOtp (@PathVariable String to) {
+    public ResponseEntity<ApiResponse<Void>> sendOtp (@PathVariable String email) {
         try {
-            emailService.sendOtp(to);
+            emailService.sendOtp(email);
             return ResponseEntity.ok().body(new ApiResponse<>(true, "OTP sent successfully"));
         } catch (Exception e) {
             return ResponseEntity.status(500).body(new ApiResponse<>(false, "Failed to send OTP: " + e.getMessage()));
