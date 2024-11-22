@@ -34,6 +34,4 @@ public class Wallpaper {
 
     private int likes;
 
-    // TODO: ADD GETTERS AND SETTERS
-
 }

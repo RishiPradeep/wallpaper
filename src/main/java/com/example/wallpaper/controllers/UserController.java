@@ -18,6 +18,7 @@ import com.example.wallpaper.dto.LoginRequest;
 import com.example.wallpaper.dto.VerifyOtp;
 import com.example.wallpaper.entities.User;
 import com.example.wallpaper.services.EmailService;
+import com.example.wallpaper.services.JWTService;
 import com.example.wallpaper.services.UserService;
 
 @RestController
@@ -29,6 +30,9 @@ public class UserController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private JWTService jwtService;
 
     @PostMapping
     // Create a user
@@ -63,10 +67,11 @@ public class UserController {
 
     @PostMapping("/login")
     // Login user
-    public ResponseEntity<ApiResponse<Void>> loginUser (@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<ApiResponse<String>> loginUser (@RequestBody LoginRequest loginRequest) {
         boolean isValidLogin = userService.loginUser(loginRequest.getUsername(),loginRequest.getPassword());
         if (isValidLogin) {
-            return ResponseEntity.ok(new ApiResponse<>(true, "Login success"));
+            String token = jwtService.generateToken(loginRequest.getUsername());
+            return ResponseEntity.ok(new ApiResponse<>(true, "Login success",token));
         } else {
             return ResponseEntity.status(401).body(new ApiResponse<>(false, "Incorrect username or password"));
         }

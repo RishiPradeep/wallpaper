@@ -5,13 +5,17 @@ import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.example.wallpaper.entities.User;
 import com.example.wallpaper.entities.UserOtp;
 
 import com.example.wallpaper.repositories.UserOtpRepository;
+import com.example.wallpaper.repositories.UserRepository;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -25,6 +29,9 @@ public class EmailService {
     @Autowired
     private UserOtpRepository userOtpRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public void sendEmail(String to, String subject, String body) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message,true);
@@ -35,6 +42,11 @@ public class EmailService {
     }
 
     public void sendOtp(String email) throws MessagingException {
+        // Check if the user exists first
+        Optional<User> optionalUser = userRepository.findByEmail(email);
+        if (!optionalUser.isPresent()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"User with email " + email + " not found");
+        }
         Optional<UserOtp> optionalUserOtp = userOtpRepository.findByEmail(email);
         if (optionalUserOtp.isPresent()) {
             UserOtp existingOtp = optionalUserOtp.get();
@@ -59,13 +71,10 @@ public class EmailService {
     public boolean verifyOtp (String email, int otp) {
         Optional<UserOtp> optionalUserOtp = userOtpRepository.findByEmail(email);
         if (!optionalUserOtp.isPresent()) {
-            System.out.println("Not present");
             return false;
         }
         UserOtp userOtp = optionalUserOtp.get();
-        System.out.println(userOtp);
         if (userOtp.isExpired()) {
-            System.out.println("Expired");
             return false;
         }
         if (userOtp.getOtp() != otp) {
