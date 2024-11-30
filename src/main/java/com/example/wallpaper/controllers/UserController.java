@@ -34,7 +34,7 @@ public class UserController {
     @Autowired
     private JWTService jwtService;
 
-    @PostMapping
+    @PostMapping("/register")
     // Create a user
     public ResponseEntity<ApiResponse<Void>> createUser(@RequestBody User user) {
         try {
