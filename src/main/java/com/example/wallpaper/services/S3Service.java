@@ -31,7 +31,7 @@ public class S3Service {
         @Value("${aws.secret-access-key}") String secretAccessID,
         @Value("${aws.bucket-region}") String region) {
             this.s3Client = S3Client.builder()
-                                    .region(Region.of(region))
+                                    .region(Region.AP_SOUTH_1)
                                     .credentialsProvider(
                                         StaticCredentialsProvider.create(AwsBasicCredentials.create(accessID, secretAccessID))
                                     )

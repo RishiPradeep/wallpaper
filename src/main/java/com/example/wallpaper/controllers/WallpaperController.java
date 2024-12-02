@@ -2,7 +2,6 @@ package com.example.wallpaper.controllers;
 
 import java.util.Optional;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,6 +47,7 @@ public class WallpaperController {
             wallpaper.setDescription(description);
             wallpaper.setTitle(fileName);
             wallpaper.setUser(myUser);
+            wallpaper.setImageurl("example");
             wallpaperService.uploadWallpaper(wallpaper);
             return ResponseEntity.ok().body(new ApiResponse<>(true, "Wallpaper uploaded successfully"));
         } catch (Exception e) {

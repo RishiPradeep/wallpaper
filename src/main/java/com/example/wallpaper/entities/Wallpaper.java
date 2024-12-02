@@ -29,7 +29,7 @@ public class Wallpaper {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "username", nullable = false)
+    @JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
     private User user;
 
     private int likes;
