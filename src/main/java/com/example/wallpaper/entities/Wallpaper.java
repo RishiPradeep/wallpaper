@@ -1,5 +1,7 @@
 package com.example.wallpaper.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,6 +32,7 @@ public class Wallpaper {
 
     @ManyToOne
     @JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
+    @JsonIgnore
     private User user;
 
     private int likes;
