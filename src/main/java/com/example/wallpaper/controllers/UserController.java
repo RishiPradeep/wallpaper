@@ -2,6 +2,7 @@ package com.example.wallpaper.controllers;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -60,9 +61,18 @@ public class UserController {
     @GetMapping("/{username}")
     // Get user by username
     public ResponseEntity<ApiResponse<User>> getUserByUsername (@PathVariable String username) {
-        return userService.findUserByUsername(username)
-            .map(user -> ResponseEntity.ok(new ApiResponse<>(true, "User fetched successfully",user)))
-            .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse<>(false, "User not found")));
+        try {
+            Optional<User> optionalUser = userService.findUserByUsername(username);
+            if (optionalUser.isPresent()) {
+                User user = optionalUser.get();
+                return ResponseEntity.ok(new ApiResponse<>(true,"User fetched", user));
+            }
+            else {
+                return ResponseEntity.status(404).body(new ApiResponse<>(false, "User with username " + username + " not found"));
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new ApiResponse<>(false, "Failed to fetch user: " + e.getMessage()));
+        }
     }
 
     @PostMapping("/login")
