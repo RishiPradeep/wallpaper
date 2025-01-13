@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,7 +32,19 @@ public class WallpaperController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("getWallpaper/{id}")
+    // Fetch a wallpaper
+    public ResponseEntity<ApiResponse<Wallpaper>> getWallpaper (@PathVariable Long id) {
+        try {
+            Wallpaper wallpaper = wallpaperService.getWallpaperById(id);
+            return ResponseEntity.ok(new ApiResponse<>(true,"Wallpaper Fetched Successfully",wallpaper));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new ApiResponse<>(false, e.getMessage()));
+        }
+    }
+
     @PostMapping("/uploadWallpaper")
+    // Upload a wallpaper
     public ResponseEntity<ApiResponse<String>> uploadWallpaper(
         @RequestParam("file") MultipartFile file,
         @RequestParam("description") String description,
